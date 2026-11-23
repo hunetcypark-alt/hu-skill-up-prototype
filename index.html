@@ -533,6 +533,11 @@ body{font-size:15px;line-height:1.55;letter-spacing:-.01em}
 .demo i{flex:none;width:1px;height:16px;background:rgba(255,255,255,.2);margin:0 6px}
 .app{height:calc(100% - 44px)}
 @media(max-width:1240px){.app{height:auto}}
+
+.demo .vs{display:inline-flex;flex:none;background:rgba(255,255,255,.1);border-radius:999px;padding:2px;margin-right:6px}
+.demo .vs a{color:#c9cfdd;text-decoration:none;font:600 12px/1 inherit;font-family:inherit;padding:5px 11px;border-radius:999px}
+.demo .vs a.on{background:#fff;color:#14171c}
+.demo .vs a:not(.on):hover{background:rgba(255,255,255,.18)}
 </style>
 </head>
 <body>
@@ -575,10 +580,10 @@ body{font-size:15px;line-height:1.55;letter-spacing:-.01em}
 <script>
 const LEVELS=[
   {n:1,at:0,name:'새내기',tier:'기본 카드',gift:'첫 카드가 나왔어요'},
-  {n:2,at:60,name:'주니어',tier:'블루 카드',gift:'사원증을 받았어요. 카드가 두꺼워졌어요'},
-  {n:3,at:150,name:'미들',tier:'실버 카드',gift:'안경을 쓰고 카드에 압인이 들어갔어요'},
-  {n:4,at:270,name:'시니어',tier:'홀로그램 카드',gift:'넥타이를 매고 카드에 홀로그램이 생겼어요'},
-  {n:5,at:400,name:'리드',tier:'골드 카드',gift:'왕관을 쓰고 골드 카드가 됐어요'}
+  {n:2,at:60,name:'주니어',tier:'블루 카드',gift:'안경과 사원증을 받았어요. 카드가 두꺼워졌어요'},
+  {n:3,at:150,name:'미들',tier:'실버 카드',gift:'태블릿을 들고 카드에 압인이 들어갔어요'},
+  {n:4,at:270,name:'시니어',tier:'홀로그램 카드',gift:'주먹을 불끈 쥐고 카드에 홀로그램이 생겼어요'},
+  {n:5,at:400,name:'리드',tier:'골드 카드',gift:'별 배지를 달고 골드 카드가 됐어요'}
 ];
 const skills=[
   {k:'서비스 기획',p:95,rec:0},{k:'커뮤니케이션',p:65},{k:'사용자 리서치',p:45},{k:'프로젝트 관리',p:20},
@@ -619,9 +624,10 @@ function statVals(){const t=total(),rk=byRank();return [Math.round(rk[0].p/t*100
 function mainStat(k){const sk=S.skills.find(x=>x.k===k);return sk.p>=300?0:1}
 function chara(lv,id){
   /* 병아리 캐릭터 이미지 2종: Lv1 plain · Lv2 glasses · Lv3 +lanyard · Lv4 +tablet · Lv5 +star (단계별 이미지가 나오면 여기만 교체) */
-  const M={1:['chick_lv1.png?v=2',.72],2:['chick_lv2.png?v=2',.76],3:['chick_lv3.png?v=2',.7],4:['chick_lv4.png?v=2',.96],5:['chick_lv5.png?v=2',.92]}[lv]||['chick1.png',.8];
+  const M={1:['chick_lv1.png?v=3',.70],2:['chick_lv2.png?v=3',.78],3:['chick_lv3.png?v=3',.84],4:['chick_lv4.png?v=3',.91],5:['chick_lv5.png?v=3',1]}[lv]||['chick_lv1.png?v=3',.8];
   const sc=M[1];
-  return `<svg viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="60" cy="116" rx="${30*sc}" ry="3.6" fill="#1b2a52" opacity=".18"/><g class="ch" id="${id}"><image href="${M[0]}" x="0" y="0" width="120" height="118" preserveAspectRatio="xMidYMax meet" transform="translate(60 118) scale(${sc}) translate(-60 -118)"/></g></svg>`}
+  const BB={1:[1254,1254,306,357,629,629],2:[1254,1254,287,286,669,710],3:[1254,1254,279,264,681,737],4:[1254,1254,263,260,684,728],5:[1254,1254,249,168,749,865]}[lv]||[1254,1254,0,0,1254,1254];
+  return `<svg viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="60" cy="116" rx="${30*sc}" ry="3.6" fill="#1b2a52" opacity=".18"/><g class="ch" id="${id}"><g transform="translate(60 118) scale(${sc}) translate(-60 -118)"><svg x="0" y="0" width="120" height="118" viewBox="${BB[2]} ${BB[3]} ${BB[4]} ${BB[5]}" preserveAspectRatio="xMidYMax meet" overflow="hidden"><image href="${M[0]}" x="0" y="0" width="${BB[0]}" height="${BB[1]}"/></svg></g></g></svg>`}
 function charaOld(lv,id){return S.style==='tool'?charaTool(lv,id):charaFrog(lv,id)}
 function charaFrog(lv,id){
   const K='#101419';
@@ -780,7 +786,7 @@ function renderCard(up){
   <div class="share"><button class="sb ghost" id="sv"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>이미지로 저장</button><button class="sb pri ${S.pulse?'pulse':''}" id="sh"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m0 0L8 8m4-4l4 4M5 14v5h14v-5"/></svg>공유하기</button></div>
   <div class="hint">카드를 눌러 뒤집어 봐요 · 마우스를 올리면 빛이 반사돼요</div>`;
   S.pulse=false;
-  document.getElementById('sv').onclick=()=>toast('이미지로 저장했어요');
+  document.getElementById('sv').onclick=()=>saveCard(lv,t,ttl,say);
   document.getElementById('sh').onclick=()=>openSheet(ttl,pct(t));
   const sc=document.getElementById('scene'),c=document.getElementById('c3d');
   const apply=(rx=0,ry=0)=>c.style.transform=`rotateX(${rx}deg) rotateY(${S.flip*180+ry}deg)`;
@@ -793,7 +799,7 @@ function renderCard(up){
 }
 const SKCOL={'서비스 기획':'#4d7cff','커뮤니케이션':'#ff9f43','사용자 리서치':'#34c98b','프로젝트 관리':'#ff7ea8','와이어프레임':'#a98bff','요구사항 정의':'#2ec4d6','데이터 분석':'#ffc83d','UX 라이팅':'#8aa0c8','정책 설계':'#8aa0c8'};
 function hexMix(h,t,a){const n=parseInt(h.slice(1),16),r=[n>>16,(n>>8)&255,n&255].map(c=>Math.round(c+(t-c)*a));return '#'+r.map(c=>c.toString(16).padStart(2,'0')).join('')}
-function chickInfo(lv){return {1:['chick_lv1.png?v=2',.72],2:['chick_lv2.png?v=2',.76],3:['chick_lv3.png?v=2',.7],4:['chick_lv4.png?v=2',.96],5:['chick_lv5.png?v=2',.92]}[lv]||['chick1.png',.8]}
+function chickInfo(lv){return {1:['chick_lv1.png?v=3',.7],2:['chick_lv2.png?v=3',.78],3:['chick_lv3.png?v=3',.84],4:['chick_lv4.png?v=3',.91],5:['chick_lv5.png?v=3',1]}[lv]||['chick_lv1.png?v=3',.8]}
 /* ===== 내 성장 = 스킬 배지 보드 (같은 크기 · 순위/경로 없음 · 포인트가 쌓이면 소재만 바뀜) ===== */
 const TNAME=['빈 자리','무광','블루 인레이','블루 실버','홀로그램','골드'];
 const tierOf=p=>p>=90?5:p>=60?4:p>=40?3:p>=20?2:p>0?1:0;
@@ -820,12 +826,59 @@ function renderR(up){renderPet();document.getElementById('pet').classList.toggle
 document.getElementById('tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.tab=b.dataset.t;
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));renderR()};
 
-const NEXTITEM=['','안경','사원증','태블릿','별 배지'];
-const NEXT=['','안경을 써요','사원증을 걸어요','태블릿을 들어요','별 배지를 달아요'];
+const NEXTITEM=['','안경과 사원증','태블릿','힘찬 주먹','별 배지와 반짝이'];
+const NEXT=['','안경을 쓰고 사원증을 걸어요','태블릿을 들어요','주먹을 불끈 쥐어요','별 배지를 달고 반짝여요'];
 const josa=w=>((w.charCodeAt(w.length-1)-0xAC00)%28)?'이에요':'예요';
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),1800)}
 function openSheet(ttl,pc){document.getElementById('stx').textContent='나는 '+ttl+' · 서비스 기획자 중 상위 '+pc+'% #스킬올리기';document.getElementById('sheet').classList.add('show')}
 document.getElementById('sheet').onclick=e=>{const b=e.target.closest('button[data-m]');if(b){try{if(b.dataset.m.startsWith('링크'))navigator.clipboard.writeText(location.href)}catch(_){}toast(b.dataset.m);document.getElementById('sheet').classList.remove('show')}else if(e.target.id==='sheet')e.currentTarget.classList.remove('show')};
+const _BBC={1:[306,357,629,629],2:[287,286,669,710],3:[279,264,681,737],4:[263,260,684,728],5:[249,168,749,865]};function cardSprite(n){return {src:chickInfo(n)[0],crop:_BBC[n]}}
+
+/* ===== 이미지로 저장: 공유 카드를 PNG로 그려서 내려받기 ===== */
+const CARD_GRAD={1:['#e3f9ef','#c2e7ff'],2:['#d6e6ff','#eadfff'],3:['#ffeab8','#ffb85c'],4:['#c3e2ff','#e0cdff','#ffd3ec'],5:['#fff0b0','#f6c944']};
+function loadImg(src){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src})}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+async function buildCardCanvas(lv,t,ttl,say){
+  const W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d');
+  try{await document.fonts.load('800 100px "Pretendard Variable"');await document.fonts.load('600 40px "Pretendard Variable"')}catch(_){}
+  const F='"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif';
+  const st=CARD_GRAD[lv.n]||CARD_GRAD[1],g=c.createLinearGradient(0,0,W*.55,H);st.forEach((col,i)=>g.addColorStop(i/(st.length-1),col));
+  c.fillStyle=g;c.fillRect(0,0,W,H);
+  // 은은한 빛
+  const rg=c.createRadialGradient(W*.72,H*.22,0,W*.72,H*.22,W*.7);rg.addColorStop(0,'rgba(255,255,255,.55)');rg.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=rg;c.fillRect(0,0,W,H);
+  c.fillStyle='rgba(20,23,28,.6)';c.font='600 34px '+F;c.textBaseline='alphabetic';
+  c.fillText('서비스 기획자 · LV.'+lv.n,84,128);
+  c.fillStyle='#14171c';c.font='800 150px '+F;c.fillText('상위',80,300);
+  c.font='800 250px '+F;c.fillText(pct(t)+'%',72,520);
+  c.font='800 58px '+F;c.fillText(ttl+josa(ttl),84,606);
+  // 캐릭터
+  const sp=cardSprite(lv.n),img=await loadImg(sp.src),crop=sp.crop||[0,0,img.naturalWidth,img.naturalHeight];
+  const ph=560,pw=ph*crop[2]/crop[3],cx=400,base=1196;
+  c.save();c.fillStyle='rgba(27,42,82,.16)';c.beginPath();c.ellipse(cx,base+8,pw*.34,22,0,0,Math.PI*2);c.fill();c.restore();
+  c.drawImage(img,crop[0],crop[1],crop[2],crop[3],cx-pw/2,base-ph,pw,ph);
+  // 말풍선
+  const lines=say.replace(/<br>/g,'\n').split('\n');c.font='700 34px '+F;
+  const bw=Math.max(...lines.map(l=>c.measureText(l).width))+64,bh=lines.length*50+40,bx=W-84-bw,by=700;
+  c.save();c.shadowColor='rgba(20,23,28,.14)';c.shadowBlur=24;c.shadowOffsetY=8;c.fillStyle='#fff';rr(c,bx,by,bw,bh,28);c.fill();c.restore();
+  c.fillStyle='#fff';c.beginPath();c.moveTo(bx+40,by+bh-2);c.lineTo(bx+16,by+bh+34);c.lineTo(bx+84,by+bh-2);c.fill();
+  c.fillStyle='#14171c';lines.forEach((l,i)=>c.fillText(l,bx+32,by+20+42+i*50));
+  // 하단: 포인트 + 카드 이름
+  c.fillStyle='#14171c';c.font='800 64px '+F;c.fillText(fmt(t)+'P',84,1284);
+  c.font='700 30px '+F;const tw=c.measureText(lv.tier).width+56;
+  c.fillStyle='rgba(255,255,255,.75)';rr(c,W-84-tw,1236,tw,64,32);c.fill();
+  c.fillStyle='#14171c';c.fillText(lv.tier,W-84-tw+28,1278);
+  c.fillStyle='rgba(20,23,28,.4)';c.font='600 26px '+F;c.fillText('#스킬올리기',84,1326);
+  return cv;
+}
+async function saveCard(lv,t,ttl,say){
+  try{
+    const cv=await buildCardCanvas(lv,t,ttl,say);
+    const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='스킬카드_LV'+lv.n+'_상위'+pct(t)+'.png';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    toast('이미지로 저장했어요');
+  }catch(e){toast('저장하지 못했어요. 다시 시도해요')}
+}
 /* level up */
 function levelUp(lv){
   document.getElementById('mcv').innerHTML=`<div class="mr" style="background-image:url(office_${lv.n}.jpg)"><div class="mrc">${chara(lv.n,'cmd')}</div></div>`;
@@ -843,7 +896,7 @@ document.getElementById('mok').onclick=()=>{S.pulse=true;document.getElementById
 const PRESET={1:[20,10,0,0,0,0,0,0,0],2:[60,30,20,10,0,0,0,0,0],3:[95,65,45,20,10,5,5,0,0],4:[100,90,70,50,30,20,10,0,0],5:[110,100,95,80,60,40,30,20,10]};
 function renderDemo(){
   const n=lvOf(total()).n,nx=LEVELS.find(x=>x.n===n+1);
-  document.getElementById('demo').innerHTML=`<b>시연</b>`+[1,2,3,4,5].map(i=>`<button data-lv="${i}" class="${i===n?'on':''}">Lv.${i} ${LEVELS[i-1].name}</button>`).join('')+`<i></i><button class="go" id="dgo" ${nx?'':'disabled'}>${nx?'다음 레벨로 올리기 ▲':'최고 레벨'}</button><button id="d30">+30P</button><button id="drs">처음 상태로</button>`;
+  document.getElementById('demo').innerHTML=`<b>시연</b><span class="vs"><a class="on">병아리</a><a href="gonom/">고놈</a></span>`+[1,2,3,4,5].map(i=>`<button data-lv="${i}" class="${i===n?'on':''}">Lv.${i} ${LEVELS[i-1].name}</button>`).join('')+`<i></i><button class="go" id="dgo" ${nx?'':'disabled'}>${nx?'다음 레벨로 올리기 ▲':'최고 레벨'}</button><button id="d30">+30P</button><button id="drs">처음 상태로</button>`;
   document.querySelectorAll('#demo [data-lv]').forEach(b=>b.onclick=()=>demoSet(+b.dataset.lv));
   const go=document.getElementById('dgo');if(go)go.onclick=demoNext;
   document.getElementById('d30').onclick=()=>demoAdd(30);
