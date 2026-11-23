@@ -560,14 +560,14 @@ body{font-size:15px;line-height:1.55;letter-spacing:-.01em}
 <script>
 const LEVELS=[
   {n:1,at:0,name:'새내기',tier:'기본 카드',gift:'첫 카드가 나왔어요'},
-  {n:2,at:1000,name:'주니어',tier:'블루 카드',gift:'사원증을 받았어요. 카드가 두꺼워졌어요'},
-  {n:3,at:2000,name:'미들',tier:'실버 카드',gift:'안경을 쓰고 카드에 압인이 들어갔어요'},
-  {n:4,at:2800,name:'시니어',tier:'홀로그램 카드',gift:'넥타이를 매고 카드에 홀로그램이 생겼어요'},
-  {n:5,at:4000,name:'리드',tier:'골드 카드',gift:'왕관을 쓰고 골드 카드가 됐어요'}
+  {n:2,at:60,name:'주니어',tier:'블루 카드',gift:'사원증을 받았어요. 카드가 두꺼워졌어요'},
+  {n:3,at:150,name:'미들',tier:'실버 카드',gift:'안경을 쓰고 카드에 압인이 들어갔어요'},
+  {n:4,at:270,name:'시니어',tier:'홀로그램 카드',gift:'넥타이를 매고 카드에 홀로그램이 생겼어요'},
+  {n:5,at:400,name:'리드',tier:'골드 카드',gift:'왕관을 쓰고 골드 카드가 됐어요'}
 ];
 const skills=[
-  {k:'서비스 기획',p:1520,rec:0},{k:'커뮤니케이션',p:520},{k:'사용자 리서치',p:300},{k:'프로젝트 관리',p:160},
-  {k:'와이어프레임',p:100,tag:'추천'},{k:'요구사항 정의',p:60},{k:'데이터 분석',p:25},{k:'UX 라이팅',p:0},{k:'정책 설계',p:0}
+  {k:'서비스 기획',p:95,rec:0},{k:'커뮤니케이션',p:65},{k:'사용자 리서치',p:45},{k:'프로젝트 관리',p:20},
+  {k:'와이어프레임',p:10,tag:'추천'},{k:'요구사항 정의',p:5},{k:'데이터 분석',p:5},{k:'UX 라이팅',p:0},{k:'정책 설계',p:0}
 ];
 const LEC={
  '서비스 기획':[['화면 흐름 설계하기',6,30],['기능 명세서 쓰는 법',8,40],['엣지 케이스 찾기',5,25],['기획 리뷰 준비하기',6,30],['출시 체크리스트 만들기',5,25]],
@@ -581,11 +581,11 @@ const LEC={
  '정책 설계':[['예외 정책 정하기',7,35],['권한 나누기',6,30],['정책서 쓰는 법',8,40]]
 };
 const TITLE={'서비스 기획':'화면 흐름 설계자','커뮤니케이션':'회의실 분위기 메이커','사용자 리서치':'인터뷰 질문 장인','프로젝트 관리':'일정 지킴이','와이어프레임':'뼈대 스케치 달인','요구사항 정의':'요구사항 해독가','데이터 분석':'숫자 탐정','UX 라이팅':'한 줄의 마법사','정책 설계':'예외 케이스 사냥꾼'};
-const S={days:3,today:false,style:'frog',skills:skills.map(s=>({...s})),sel:'서비스 기획',tab:'card',flip:0,week:155,done:{},log:[['엣지 케이스 찾기','서비스 기획','+25'],['한 장으로 설득하기','커뮤니케이션','+30'],['인터뷰 질문 만들기','사용자 리서치','+35']],busy:false};
+const S={days:3,today:false,style:'frog',skills:skills.map(s=>({...s})),sel:'서비스 기획',tab:'card',flip:0,week:75,done:{},log:[['엣지 케이스 찾기','서비스 기획','+25'],['한 장으로 설득하기','커뮤니케이션','+30'],['인터뷰 질문 만들기','사용자 리서치','+35']],busy:false};
 const total=()=>S.skills.reduce((a,s)=>a+s.p,0);
 const lvOf=t=>{let l=LEVELS[0];for(const x of LEVELS)if(t>=x.at)l=x;return l};
 const fmt=n=>n.toLocaleString('ko-KR');
-const pct=t=>Math.min(99,Math.max(1,Math.round(20*Math.pow(2685/t,1.5))));
+const pct=t=>Math.min(99,Math.max(1,Math.round(20*Math.pow(245/t,1.5))));
 const byRank=()=>[...S.skills].sort((a,b)=>b.p-a.p);
 
 /* character */
@@ -666,7 +666,7 @@ function charaTool(lv,id){
 /* left */
 function renderL(){
   const t=total(),lv=lvOf(t);
-  const strong=S.skills.filter(s=>s.p>=300).length,grow=S.skills.filter(s=>s.p>0&&s.p<300).length;
+  const strong=S.skills.filter(s=>s.p>=90).length,grow=S.skills.filter(s=>s.p>0&&s.p<90).length;
   document.getElementById('pl').innerHTML=`
   <div class="who"><div class="av">${chara(lv.n,'x0').replace('class="ch"','')}</div><div><b>서비스 기획자로 달리는 나</b><small>프로필 바꾸기 ›</small></div></div>
   <div class="pts">${fmt(t)}<i>P</i></div>
@@ -781,7 +781,7 @@ function hexMix(h,t,a){const n=parseInt(h.slice(1),16),r=[n>>16,(n>>8)&255,n&255
 function chickInfo(lv){return {1:['chick_lv1.png?v=2',.72],2:['chick_lv2.png?v=2',.76],3:['chick_lv3.png?v=2',.7],4:['chick_lv4.png?v=2',.96],5:['chick_lv5.png?v=2',.92]}[lv]||['chick1.png',.8]}
 /* ===== 내 성장 = 스킬 배지 보드 (같은 크기 · 순위/경로 없음 · 포인트가 쌓이면 소재만 바뀜) ===== */
 const TNAME=['빈 자리','무광','블루 인레이','블루 실버','홀로그램','골드'];
-const tierOf=p=>p>=1500?5:p>=800?4:p>=400?3:p>=150?2:p>0?1:0;
+const tierOf=p=>p>=90?5:p>=60?4:p>=40?3:p>=20?2:p>0?1:0;
 S._gp={};S._gt={};
 ['서비스 기획','커뮤니케이션','사용자 리서치'].forEach(k=>{const x=S.skills.find(z=>z.k===k);if(x)x.wk=true});
 function badgeSVG(sk,id){
@@ -794,7 +794,7 @@ function renderGal(up){
   const cells=S.skills.map((sk,i)=>`<button class="bd t${tierOf(sk.p)} ${sk.k===S.sel?'on':''}" data-k="${sk.k}" title="${sk.k} · ${TNAME[tierOf(sk.p)]}">${sk.wk&&sk.p?'<i class="wk"></i>':''}${badgeSVG(sk,'b'+i)}<span class="n">${sk.k}</span><span class="p">${sk.p?fmt(sk.p)+'P':'아직 0P'}</span></button>`).join('');
   document.getElementById('view').innerHTML=`<div class="gb">
   <div class="board"><div class="bh"><b>내 스킬 배지</b><span>${got}개 모았어요</span></div><div class="bgrid">${cells}</div></div>
-  <div class="hint">포인트가 쌓이면 배지 소재가 바뀌어요 · 150P · 400P · 800P · 1,500P</div></div>`;
+  <div class="hint">포인트가 쌓이면 배지 소재가 바뀌어요 · 20P · 40P · 60P · 90P</div></div>`;
   document.querySelectorAll('.bd').forEach(b=>b.onclick=()=>{S.sel=b.dataset.k;renderL();renderM();renderGal()});
   S.skills.forEach(sk=>{const pp=S._gp[sk.k],pt=S._gt[sk.k],T=tierOf(sk.p);S._gp[sk.k]=sk.p;S._gt[sk.k]=T;
     if(up===sk.k&&pp!==undefined&&sk.p>pp){const b=document.querySelector(`.bd[data-k="${sk.k}"]`);if(!b)return;
