@@ -503,8 +503,8 @@ body{font-size:15px;line-height:1.55;letter-spacing:-.01em}
 /* ===== 내 성장: 사무실을 화면 배경으로 은은하게 (카드 없음) ===== */
 .pane.r{position:relative}
 .pane.r .top{position:relative;z-index:5}
-.pet:not(.off){display:block!important;width:calc(100% + 64px);max-width:none!important;margin:calc(-1 * var(--toph,90px)) -32px 0!important}
-.hero2{position:relative;aspect-ratio:4/3;overflow:hidden;-webkit-mask-image:linear-gradient(#000 90%,transparent);mask-image:linear-gradient(#000 90%,transparent)}
+.pet:not(.off){display:block!important;width:min(calc(100% + 64px),720px);max-width:none!important;margin:calc(-1 * var(--toph,90px)) 0 0!important}
+.hero2{position:relative;aspect-ratio:4/3;overflow:hidden;-webkit-mask-image:linear-gradient(#000 90%,transparent),linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(#000 90%,transparent),linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-composite:intersect}
 .h2bg{position:absolute;inset:0;background-size:cover;background-position:50% 72%;background-repeat:no-repeat}
 .h2bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(243,246,253,.35),rgba(243,246,253,.08) 30%,rgba(243,246,253,0) 60%)}
 .h2info{position:absolute;left:40px;top:calc(var(--toph,90px) + 8px);width:min(240px,40%);z-index:2}
