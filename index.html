@@ -519,9 +519,24 @@ body{font-size:15px;line-height:1.55;letter-spacing:-.01em}
 .h2chick svg{width:100%;height:100%;overflow:visible}
 .h2chick .bubble{top:-8px}
 .pet:not(.off)+.view{margin-top:-110px;position:relative;z-index:2}
+
+/* ===== 시연 도구 바 ===== */
+.demo{position:relative;z-index:80;height:44px;background:#14171c;color:#fff;display:flex;align-items:center;gap:6px;padding:0 16px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.demo::-webkit-scrollbar{display:none}
+.demo b{font-size:11px;font-weight:700;letter-spacing:.08em;color:#8b93a7;margin-right:6px;flex:none}
+.demo button{flex:none;border:0;border-radius:999px;padding:6px 12px;font:600 12px/1 inherit;font-family:inherit;color:#c9cfdd;background:rgba(255,255,255,.1);cursor:pointer}
+.demo button:hover{background:rgba(255,255,255,.18)}
+.demo button.on{background:#fff;color:#14171c}
+.demo .go{background:#2b5cff;color:#fff}
+.demo .go:hover{background:#4a73ff}
+.demo .go[disabled]{opacity:.4;cursor:default}
+.demo i{flex:none;width:1px;height:16px;background:rgba(255,255,255,.2);margin:0 6px}
+.app{height:calc(100% - 44px)}
+@media(max-width:1240px){.app{height:auto}}
 </style>
 </head>
 <body>
+<div class="demo" id="demo"></div>
 <div class="app">
   <section class="pane l" id="pl"></section>
   <section class="pane m" id="pm"></section>
@@ -823,6 +838,34 @@ function levelUp(lv){
 document.getElementById('mok').onclick=()=>{S.pulse=true;document.getElementById('ov').classList.remove('show');S.tab='card';S.flip=0;
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t==='card'));renderR()};
 
+
+/* ===== 시연 도구: 레벨 바로가기 / 한 단계 올리기 ===== */
+const PRESET={1:[20,10,0,0,0,0,0,0,0],2:[60,30,20,10,0,0,0,0,0],3:[95,65,45,20,10,5,5,0,0],4:[100,90,70,50,30,20,10,0,0],5:[110,100,95,80,60,40,30,20,10]};
+function renderDemo(){
+  const n=lvOf(total()).n,nx=LEVELS.find(x=>x.n===n+1);
+  document.getElementById('demo').innerHTML=`<b>시연</b>`+[1,2,3,4,5].map(i=>`<button data-lv="${i}" class="${i===n?'on':''}">Lv.${i} ${LEVELS[i-1].name}</button>`).join('')+`<i></i><button class="go" id="dgo" ${nx?'':'disabled'}>${nx?'다음 레벨로 올리기 ▲':'최고 레벨'}</button><button id="d30">+30P</button><button id="drs">처음 상태로</button>`;
+  document.querySelectorAll('#demo [data-lv]').forEach(b=>b.onclick=()=>demoSet(+b.dataset.lv));
+  const go=document.getElementById('dgo');if(go)go.onclick=demoNext;
+  document.getElementById('d30').onclick=()=>demoAdd(30);
+  document.getElementById('drs').onclick=()=>location.reload();
+}
+function demoApply(before){
+  const after=lvOf(total());renderL();renderM();renderR();
+  if(after.n>before.n)setTimeout(()=>levelUp(after),400);
+}
+function demoSet(n){
+  const before=lvOf(total());
+  S.skills.forEach((x,i)=>x.p=PRESET[n][i]);S.week=Math.round(total()/3);
+  demoApply(before);
+}
+function demoAdd(p){
+  const before=lvOf(total()),sk=S.skills.find(x=>x.k===S.sel)||S.skills[0];
+  sk.p+=p;S.week+=p;demoApply(before);
+}
+function demoNext(){
+  const t=total(),nx=LEVELS.find(x=>x.n===lvOf(t).n+1);if(nx)demoAdd(nx.at-t);
+}
+const _rr=renderR;renderR=function(u){_rr(u);renderDemo()};
 renderL();renderM();renderR();
 </script>
 </body>
